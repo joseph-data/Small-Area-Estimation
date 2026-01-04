@@ -1,6 +1,13 @@
 
 # ´pak´ by posit
 
+begin with these 
+
+´´´{r}
+renv::settings$use.pak(TRUE)
+
+´´´
+
 [Documentation](https://pak.r-lib.org/)
 
 ´´´{r}
