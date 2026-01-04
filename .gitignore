@@ -89,11 +89,12 @@ rsconnect/
 .Rproj.user/
 
 # renv: local package library
+renv/
 renv/library/
 renv/python/
 
 # User-level profile (often contains local-only settings)
-.Rprofile
+#.Rprofile
 
 # Build outputs
 outputs/
