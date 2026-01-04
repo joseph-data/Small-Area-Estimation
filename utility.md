@@ -1,16 +1,15 @@
 
-# ´pak´ by posit
+# `pak` by posit
 
 begin with these 
 
-´´´{r}
+```{r}
 renv::settings$use.pak(TRUE)
-
-´´´
+```
 
 [Documentation](https://pak.r-lib.org/)
 
-´´´{r}
+```{r}
 install.packages("pak")
 
 
@@ -22,6 +21,4 @@ pak::pkg_install(c(
   "sf",
   "targets"
 ))
-
-
-´´´
+```
