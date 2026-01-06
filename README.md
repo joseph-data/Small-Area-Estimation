@@ -1,111 +1,84 @@
-# Small-Area Estimation (SAE) Workflow
+# Small-Area Estimation (SAE) — Sweden
 
 [![R](https://img.shields.io/badge/R-276DC3?logo=R&logoColor=white)](https://cran.r-project.org/)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![GeoJSON](https://img.shields.io/badge/GeoJSON-FFFB00?logo=geojson&logoColor=black)](https://geojson.org/)
 [![Google Earth Engine](https://img.shields.io/badge/Google%20Earth%20Engine-34A853?logo=googleearthengine&logoColor=white)](https://earthengine.google.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Project Write-up
+Reproducible workflow for county-level unemployment small-area estimation in Sweden using Fay–Herriot area-level models (R), with optional Python notebooks for pulling SCB inputs and a Google Earth Engine script for geospatial covariates.
 
-A detailed write-up for this project can be found in the following PDF:  
-[Ms Thesis II.pdf](https://github.com/joseph-data/sae/blob/main/Msc%20Thesis%20II.pdf)
+## Project write-up
 
----
+- Thesis PDF: [`documentation/Msc Thesis II.pdf`](documentation/Msc%20Thesis%20II.pdf)
 
-This repository provides a reproducible framework for small-area estimation (SAE) of county-level unemployment rates in Sweden, using the Fay–Herriot area-level model and its variants. The workflow integrates R for statistical modeling, Python for data acquisition from SCB, and Google Earth Engine (GEE) for geospatial data.
-
-## Repository Structure
+## Repository layout
 
 ```
-├── R/
-│   ├── 1_load_libraries.R
-│   ├── 2_sweden_preprocess.R
-│   ├── 3_visualization.R
-│   ├── test4.R
-│   └── sae_model_report.R
-├── outputs/
-│   └── sae/
-│       ├── fh_models.rds
-│       ├── sae_model_report.csv
-│       ├── correlation_matrix.png
-│       ├── sae_map_*.png
-│       └── compare_*.png
-├── data/
-│   ├── directEstimate.json        # JSON for direct unemployment estimates (from SCB API)
-│   ├── popdensity.json            # Population density data (from SCB API)
-│   ├── vacancies.csv              # Job vacancies (from arbetsformedlingen.se)
-├── Python_pull/                   # Python helper scripts for data acquisition
-│   ├── 1_SCBdirect_estimate.py    # Pulls direct unemployment estimates from SCB API
-│   └── 2_SCBpopDensity.py         # Pulls population density from SCB API
-├── gee.js                         # JavaScript for Google Earth Engine geospatial data extraction
-├── Msc Thesis II.pdf              # Full project write-up
-└── README.md
+.
+├── R/                      # R scripts (preprocess, visualization, SAE models)
+├── Python_pull/            # Python notebooks to pull SCB inputs (PXWeb)
+├── data/                   # Inputs (SCB, GEE), shapefiles, and intermediate .RData
+├── outputs/                # Generated figures/maps/reports (gitignored)
+├── renv.lock, renv/        # R dependency lock + bootstrap
+├── pyproject.toml, uv.lock # Python project metadata + lock (minimal)
+└── qmarkdown/              # Thesis supporting document (Quarto)
 ```
 
-## Getting Started
+## Quick start (R)
 
-1. **Clone the repository**
-
-    ```bash
-    git clone https://github.com/joseph-data/sae.git
-    cd sae
-    ```
-
-2. **Install dependencies**
+1. Restore R dependencies (recommended):
 
     ```r
-    # In R
-    install.packages(c("here", "dplyr", "ggplot2", "emdi", "spdep", "corrplot", "purrr", "tibble", "tidyr"))
+    install.packages("renv")
+    renv::restore()
     ```
 
-3. **Run the main script**
+2. Preprocess data + generate direct-estimate maps:
 
     ```r
-    # In R or RStudio, source the main SAE script
+    source("R/3_visualization.R")
+    ```
+
+3. Fit Fay–Herriot models + write model outputs:
+
+    ```r
     source("R/test4.R")
     ```
 
-    This will:
-    * Fit various FH models (initial, log, arcsin, logit; full vs. reduced)
-    * Perform spatial diagnostics (Moran’s I)
-    * Generate correlation matrix and maps
-    * Save model objects under `outputs/sae/fh_models.rds`
-
-4. **Generate the report table**
+4. Build the model summary table:
 
     ```r
-    source("R/sae_model_report.R")
+    source("R/report.R")
     ```
 
-    This creates `outputs/sae/sae_model_report.csv`, which summarizes coefficients (with p-values) and fit statistics (AIC, BIC, R², Adj. R²).
+## Inputs and outputs
 
-## Scripts Overview
+**Key inputs used by `R/2_sweden_preprocess.R`:**
 
-* **1_load_libraries.R**: Loads libraries and sets project-wide options.
-* **2_sweden_preprocess.R**: Reads raw survey and auxiliary data, constructs `combined_data`, and calculates sampling variances (`var_est`).
-* **3_visualization.R**: Provides `map_plot()` and `compare_plot()` functions to create SAE maps and compare EBLUP vs. direct estimates.
-* **test4.R**: Orchestrates the full modeling pipeline:
-    1. Spatial diagnostics
-    2. Covariate transformation and correlation analysis
-    3. FH model fitting (initial and transformed)
-    4. Reduced model selection (BIC-driven stepwise)
-    5. Mapping and diagnostics
-    6. Save outputs
-* **sae_model_report.R**: Reads `fh_models.rds`, extracts coefficients (with p-values) and statistics, formats a publication-ready table, and writes to CSV.
+- `data/SWE_adm/SWE_adm1.shp` (county boundaries)
+- `data/direct_estimates.csv` (direct unemployment estimates)
+- `data/geodata.csv` (GEE-derived covariates)
+- `data/popdensity.csv` (population density)
+- `data/vacancies.csv` (job vacancies)
 
-## Outputs
+**Common outputs:**
 
-* **Correlation Matrix**: `outputs/sae/correlation_matrix.png`
-* **SAE Maps**: `outputs/sae/sae_map_<ModelName>.png`
-* **Comparison Plots**: `outputs/sae/compare_<ModelName>.png`
-* **Model Objects**: `outputs/sae/fh_models.rds`
-* **Report Table**: `outputs/sae/sae_model_report.csv`
+- `data/processed_sweden.RData` (processed data objects)
+- `outputs/html/sweden_direct_map.html` (interactive map)
+- `outputs/img/sweden_direct_map_*.png` (static maps)
+- `outputs/sae/` (SAE model artifacts, e.g. `fh_models.rds`, plots, tables)
 
----
+`outputs/` is generated and ignored by git.
+
+## Optional: refresh SCB inputs (Python)
+
+See [`Python_pull/README.md`](Python_pull/README.md) and run the notebooks in `Python_pull/notebooks/`. They currently write:
+
+- `data/Pop_density.csv`
+- `data/UnempDirect.csv`
+
+If you want these to feed the R pipeline as-is, rename them to match the filenames expected by `R/2_sweden_preprocess.R` (or update the R script).
 
 ## Contact
 
-For questions or suggestions, please open an issue or reach out via [GitHub profile](https://github.com/joseph-data).
-
----
+For questions or suggestions, please open an issue or reach out via https://github.com/joseph-data
