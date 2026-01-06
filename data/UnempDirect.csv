@@ -1,0 +1,22 @@
+code,county,labor,year_quarter,rate,margin_of_error
+01,Stockholm county,ALÖS,2025K1,8.7,0.9
+03,Uppsala county,ALÖS,2025K1,11.6,3.3
+04,Södermanland county,ALÖS,2025K1,10.6,3.9
+05,Östergötland county,ALÖS,2025K1,8.5,2.2
+06,Jönköping county,ALÖS,2025K1,7.8,2.5
+07,Kronoberg county,ALÖS,2025K1,10.8,4.1
+08,Kalmar county,ALÖS,2025K1,10.7,3.7
+09,Gotland county,ALÖS,2025K1,..,..
+10,Blekinge county,ALÖS,2025K1,12.9,3.6
+12,Skåne county,ALÖS,2025K1,10.9,1.5
+13,Halland county,ALÖS,2025K1,9.6,2.4
+14,Västra Götaland county,ALÖS,2025K1,9.0,1.3
+17,Värmland county,ALÖS,2025K1,8.0,3.0
+18,Örebro county,ALÖS,2025K1,9.1,3.0
+19,Västmanland county,ALÖS,2025K1,12.4,3.7
+20,Dalarna county,ALÖS,2025K1,9.1,3.3
+21,Gävleborg county,ALÖS,2025K1,11.3,3.3
+22,Västernorrland county,ALÖS,2025K1,8.4,3.0
+23,Jämtland county,ALÖS,2025K1,6.0,2.7
+24,Västerbotten county,ALÖS,2025K1,6.8,2.8
+25,Norrbotten county,ALÖS,2025K1,6.3,1.7

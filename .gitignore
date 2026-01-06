@@ -1,109 +1,160 @@
-# Ignore all HTML files
-*.html
+################################################################################
+# .gitignore
+#
+# Keep this file:
+# - Organized by concern/tool
+# - Focused on generated artifacts and machine-local settings
+################################################################################
 
-# Dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# Testing
-/coverage
-
-# Production
-/build
-/dist
-
-# Misc
+# ------------------------------------------------------------------------------
+# OS / file-system noise
+# ------------------------------------------------------------------------------
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+._.DS_Store
+Thumbs.db
+Desktop.ini
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
+# ------------------------------------------------------------------------------
+# Editors / IDEs
+# ------------------------------------------------------------------------------
 .idea/
 .vscode/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-# History files
-.Rhistory
-.Rapp.history
 
-# Session Data files
-.RData
-.RDataTmp
+# ------------------------------------------------------------------------------
+# Environment / secrets (local only)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+!.env.template
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# User-specific files
-.Ruserdata
+# ------------------------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Example code in package build process
-*-Ex.R
-
-# Output files from R CMD build
-/*.tar.gz
-
-# Output files from R CMD check
-/*.Rcheck/
-
-# RStudio files
-.Rproj.user/
-
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
-
-# knitr and R markdown default cache directories
-*_cache/
-/cache/
-
-# Temporary files created by R markdown
+# ------------------------------------------------------------------------------
+# Rendered outputs (often generated)
+# ------------------------------------------------------------------------------
+*.html
 *.utf8.md
 *.knit.md
 
-# R Environment Variables
+# ------------------------------------------------------------------------------
+# R / RStudio
+# ------------------------------------------------------------------------------
+.Rhistory
+.Rapp.history
+.RData
+.RDataTmp
+.Ruserdata
+
+# R package build/check artifacts
+*-Ex.R
+/*.tar.gz
+/*.Rcheck/
+
+# RStudio project files & settings
+.Rproj.user/
+*.Rproj
+
+# R environment variables (often machine-specific)
 .Renviron
 
-# pkgdown site
-docs/
+# R user profile (often machine-specific)
+.Rprofile
+
+# OAuth2 token cache (httr)
+.httr-oauth
 
 # translation temp files
 po/*~
 
 # RStudio Connect folder
 rsconnect/
-# R session/state
-.Rhistory
-.RData
 
-# RStudio project settings
-.Rproj.user/
-
-# renv: local package library
-renv/
+# ------------------------------------------------------------------------------
+# renv (dependency management)
+# - Commit: `renv.lock`, `renv/activate.R`, `renv/.gitignore`
+# - Ignore: local libraries and staging areas
+# ------------------------------------------------------------------------------
 renv/library/
+renv/staging/
 renv/python/
 
-# User-level profile (often contains local-only settings)
-#.Rprofile
+# ------------------------------------------------------------------------------
+# knitr / R Markdown / Quarto caches
+# ------------------------------------------------------------------------------
+*_cache/
+/cache/
+.quarto/
 
-# Build outputs
+# pkgdown site output (if used)
+docs/
+
+# Produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# ------------------------------------------------------------------------------
+# Python
+# ------------------------------------------------------------------------------
+.python-version
+.pythonversion
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+coverage/
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ------------------------------------------------------------------------------
+# Node / JavaScript tooling (only if you add it)
+# ------------------------------------------------------------------------------
+node_modules/
+.pnp/
+.pnp.js
+.pnp.cjs
+
+# ------------------------------------------------------------------------------
+# Project-specific generated outputs
+# ------------------------------------------------------------------------------
 outputs/
-# If your raw data are large or sensitive, uncomment this
+
+# If your raw data are large or sensitive, uncomment:
 # data/
 
-# Python pull outputs
+# If Python pulls create local-only artifacts, uncomment:
 # Python_pull/
-
-# OS junk
-.DS_Store
-Thumbs.db
