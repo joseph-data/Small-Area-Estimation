@@ -13,7 +13,9 @@ source(here("R", "2_sweden_preprocess.R"))  # Loads sweden_map_data
 # Format percent labels
 sweden_map_data <- sweden_map_data %>%
   dplyr::mutate(
-    Percent_label = scales::label_percent(accuracy = 0.1)(Percent)
+    Percent_label = scales::label_percent(accuracy = 0.1)(Percent),
+    SE_label      = scales::label_number(accuracy = 0.001)(standard_error),
+    Hover_label   = paste0(NAME_1, ": ", Percent_label)
   )
 
 # 3. Ensure Output Directories
@@ -26,31 +28,42 @@ dir.create(out_img,  recursive = TRUE, showWarnings = FALSE)
 # 4. Interactive Map with tmap + Leaflet
 # ---------------------------------------------------------
 tmap::tmap_mode("view")
-tm_direct <-
+title_text <- "Direct Unemployment Estimates by County (SCB Q1 2025)"
+tm_direct_base <-
   tm_shape(sweden_map_data) +
   tm_polygons(
-    col        = "Percent",
-    palette    = "Blues",
-    border.col = "grey20",
-    alpha      = 0.7,
-    title      = "Unemployment Rate"
-  ) +
-  tm_text(
-    text           = "Percent_label",
-    size           = "AREA",
-    remove.overlap = TRUE,
-    bg.color       = "white",
-    bg.alpha       = 0.5
-  ) +
-  tm_layout(
-    main.title      = "Direct Unemployment Estimates by County",
-    main.title.size = 1.2,
-    legend.outside  = TRUE,
-    frame           = FALSE
+    fill = "Percent",
+    fill.scale = tm_scale_continuous(
+      values = "-viridis",
+      label.format = tm_label_format(fun = scales::label_percent(accuracy = 0.1))
+    ),
+    fill.legend = tm_legend(
+      title = "Unemployment (%)",
+      frame = FALSE,
+      bg.color = "white",
+      bg.alpha = 0.7
+    ),
+    col = "white",
+    lwd = 0.8,
+    col_alpha = 0.9,
+    fill_alpha = 0.9,
+    id = "NAME_1",
+    hover = "Hover_label",
+    popup.vars = c(
+      "County" = "NAME_1",
+      "Unemployment" = "Percent_label",
+      "Standard error" = "SE_label"
+    )
   )
-print(tm_direct)
 
-leaflet_map <- tmap_leaflet(tm_direct)
+tm_direct_interactive <-
+  tm_basemap("Esri.WorldTopoMap") +
+  tm_direct_base +
+  tm_layout(frame = FALSE) +
+  tm_title_out(title_text)
+print(tm_direct_interactive)
+
+leaflet_map <- tmap_leaflet(tm_direct_interactive)
 htmlwidgets::saveWidget(
   widget        = leaflet_map,
   file          = here(out_html, "sweden_direct_map.html"),
@@ -60,6 +73,18 @@ htmlwidgets::saveWidget(
 # 5. Static Thematic Map (tmap → PNG)
 # ---------------------------------------------------------
 tmap::tmap_mode("plot")
+tm_direct <-
+  tm_direct_base +
+  tm_text(
+    text = "Percent_label",
+    size = 0.7,
+    col = "black",
+    bgcol = "white",
+    bgcol_alpha = 0.7,
+    options = opt_tm_text(remove_overlap = TRUE)
+  ) +
+  tm_layout(frame = FALSE) +
+  tm_title_out(title_text)
 tmap::tmap_save(
   tm_direct,
   filename = here(out_img, "sweden_direct_map_tmap.png"),
@@ -88,7 +113,7 @@ static_map <- ggplot2::ggplot() +
   theme_minimal() +
   labs(
     title    = "Direct Unemployment Estimates by County",
-    subtitle = "Sweden, 2025"
+    subtitle = "SCB Q1 2025"
   ) +
   theme(
     panel.grid      = element_blank(),
@@ -107,6 +132,7 @@ ggplot2::ggsave(
 # ---------------------------------------------------------
 dir.create(here("data"), recursive = TRUE, showWarnings = FALSE)
 save(
+  tm_direct_interactive,
   tm_direct,
   static_map,
   file = data_path("visual.RData")
